@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latin Declensions Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #000 ; /* Default text color */
+        }
+
+        h1 {font-family: 'Muni', Arial, sans-serif;
+            color: #f01928; /* Heading color */
+        }
+
+        h2 {
+            color: #0000dc; /* Heading 2 color */
+        }
+
+        /* Add your other CSS styles here */
+
+        /* Example styles for the quiz container */
+        #quizContainer {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+        }
+
+        /* Example styles for the input field */
+        #userGuess {
+            width: 200px;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Declinationes Linguae Latinae</h1>
+    <p>This application should work as a study aid for learning latin. It was primarily aimed at medical students,
+    however anyone who wants to improve their latin is welcome. LM</p>
+
+    <h2>Select the declensions you want to practice:</h2>
+
+    <label><input type="checkbox" class="declensionCheckbox" value="I"> Declinatio I</label><br>
+    <label><input type="checkbox" class="declensionCheckbox" value="II"> Declinatio II</label><br>
+    <label><input type="checkbox" class="declensionCheckbox" value="III"> Declinatio III</label><br>
+    <label><input type="checkbox" class="declensionCheckbox" value="IV"> Declinatio IV</label><br>
+    <label><input type="checkbox" class="declensionCheckbox" value="V"> Declinatio V</label><br>
+
+    <h2>Select the cases you want to practice:</h2>
+
+    <label><input type="checkbox" class="caseCheckbox" value="Nominative"> Nominativus</label><br>
+    <label><input type="checkbox" class="caseCheckbox" value="Genitive"> Genitivus</label><br>
+    <label><input type="checkbox" class="caseCheckbox" value="Dative"> Dativus</label><br>
+    <label><input type="checkbox" class="caseCheckbox" value="Accusative"> Accusativus</label><br>
+    <label><input type="checkbox" class="caseCheckbox" value="Ablative"> Ablativus</label><br>
+
+    <button onclick="startQuiz()">Start Quiz</button>
+
+    <div id="quizContainer" style="display: none;">
+        <p id="randomWord"></p>
+        <p id="randomCaseNumber"></p>
+        <label for="userGuess">Your guess:</label>
+        <input type="text" id="userGuess" onkeydown="handleKeyDown(event)">
+        <button onclick="submitGuess()">Submit</button>
+    </div>
+
+    <script>
+        function handleKeyDown(event) {
+                // Check if the pressed key is Enter (key code 13)
+                if (event.keyCode === 13) {
+                    // Call the function to submit the guess
+                    submitGuess();
+                }
+            }
+        const wordsData = [{ word: 'vena', genitive: 'venae', gender: 'f' },
+                        { word: 'colon', genitive: 'coli', gender: 'n' },
+                        { word: 'dens', genitive: 'dentis', gender: 'm' },
+                        { word: 'intestinum', genitive: 'intestini', gender: 'n' },
+                        { word: 'arteria', genitive: 'arteriae', gender: 'f' },
+                        { word: 'nervus', genitive: 'nervi', gender: 'm' },
+                        { word: 'musculus', genitive: 'musculi', gender: 'm' },
+                        { word: 'tendo', genitive: 'tendinis', gender: 'm' },
+                        { word: 'caput', genitive: 'capitis', gender: 'n' },
+                        { word: 'origo', genitive: 'originis', gender: 'f' },
+                        { word: 'insertio', genitive: 'insertionis', gender: 'f' },
+                        { word: 'aponeurosis', genitive: 'aponeurosis', gender: 'f' },
+                        { word: 'cutis', genitive: 'cutis', gender: 'f' },
+                        { word: 'os', genitive: 'ossis', gender: 'n' },
+                        { word: 'medulla', genitive: 'medullae', gender: 'f' },
+                        { word: 'septum', genitive: 'septi', gender: 'n' },
+                        { word: 'membrana', genitive: 'membranae', gender: 'f' },
+                        { word: 'articulatio', genitive: 'articulationis', gender: 'f' },
+                        { word: 'incisura', genitive: 'incisurae', gender: 'f' },
+                        { word: 'margo', genitive: 'marginis', gender: 'm' },
+                        { word: 'angulus', genitive: 'anguli', gender: 'm' },
+                        { word: 'linea', genitive: 'lineae', gender: 'f' },
+                        { word: 'collum', genitive: 'colli', gender: 'n' },
+                        { word: 'tuber', genitive: 'tuberis', gender: 'n' },
+                        { word: 'tuberculum', genitive: 'tuberculi', gender: 'n' },
+                        { word: 'crista', genitive: 'cristae', gender: 'f' },
+                        { word: 'sulcus', genitive: 'sulci', gender: 'm' },
+                        { word: 'processus', genitive: 'processus', gender: 'm' },
+                        { word: 'cavitas', genitive: 'cavitatis', gender: 'f' },
+                        { word: 'cavum', genitive: 'cavi', gender: 'n' },
+                        { word: 'humerus', genitive: 'humeri', gender: 'm' },
+                        { word: 'spina', genitive: 'spinae', gender: 'f' },
+                        { word: 'canalis', genitive: 'canalis', gender: 'm' },
+                        { word: 'clavis', genitive: 'clavis', gender: 'f' },
+                        { word: 'clavicula', genitive: 'claviculae', gender: 'f' },
+                        { word: 'scapula', genitive: 'scapulae', gender: 'f' },
+                        { word: 'radius', genitive: 'radii', gender: 'm' },
+                        { word: 'ulna', genitive: 'ulnae', gender: 'f' },
+                        { word: 'carpus', genitive: 'carpi', gender: 'm' },
+                        { word: 'digitus', genitive: 'digiti', gender: 'm' },
+                        { word: 'membrum', genitive: 'membri', gender: 'n' },
+                        { word: 'manus', genitive: 'manus', gender: 'f' },
+                        { word: 'extremitas', genitive: 'extremitatis', gender: 'f' },
+                        { word: 'tuberositas', genitive: 'tuberositatis', gender: 'f' },
+                        { word: 'facies', genitive: 'faciei', gender: 'f' },
+                        { word: 'ligamentum', genitive: 'ligamenti', gender: 'n' },
+                        { word: 'acromion', genitive: 'acromii', gender: 'n' },
+                        { word: 'costa', genitive: 'costae', gender: 'f' },
+                        { word: 'impressio', genitive: 'impressionis', gender: 'f' },
+                        { word: 'fossa', genitive: 'fossae', gender: 'f' },
+                        { word: 'fovea', genitive: 'foveae', gender: 'f' },
+                        { word: 'corpus', genitive: 'corporis', gender: 'n' },
+                        { word: 'condylus', genitive: 'condyli', gender: 'm' },
+                        { word: 'trochlea', genitive: 'trochleae', gender: 'f' },
+                        { word: 'capitulum', genitive: 'capituli', gender: 'n' },
+                        { word: 'circumferentia', genitive: 'circumferentiae', gender: 'f' },
+                        { word: 'olecranon', genitive: 'olecrani', gender: 'n' },
+                        { word: 'phalanx', genitive: 'phalangis', gender: 'f' },
+                        { word: 'cochlea', genitive: 'cochleae', gender: 'f' },
+                        { word: 'cochlear', genitive: 'cochlearis', gender: 'n' },
+                        { word: 'hamulus', genitive: 'hamuli', gender: 'm' },
+                        { word: 'eminentia', genitive: 'eminentiae', gender: 'f' },
+                        { word: 'basis', genitive: 'basis', gender: 'f' },
+                        { word: 'occiput', genitive: 'occipitis', gender: 'n' },
+                        { word: 'coccyx', genitive: 'coccygis', gender: 'm' },
+                        { word: 'frons', genitive: 'frontis', gender: 'f' },
+                        { word: 'discus', genitive: 'disci', gender: 'm' },
+                        { word: 'pubis', genitive: 'pubis', gender: 'f' },
+                        { word: 'labrum', genitive: 'labri', gender: 'n' },
+                        { word: 'bursa', genitive: 'bursae', gender: 'f' },
+                        { word: 'vagina', genitive: 'vaginae', gender: 'f' },
+                        { word: 'meniscus', genitive: 'menisci', gender: 'm' },
+                        { word: 'sella', genitive: 'sellae', gender: 'f' },
+                        { word: 'sternum', genitive: 'sterni', gender: 'n' },
+                        { word: 'recessus', genitive: 'recessus', gender: 'm' },
+                        { word: 'chorda', genitive: 'chordae', gender: 'f' },
+                        { word: 'brachium', genitive: 'brachii', gender: 'n' },
+                        { word: 'antebrachium', genitive: 'antebrachii', gender: 'n' },
+                        { word: 'flexio', genitive: 'flexionis', gender: 'f' },
+                        { word: 'extensio', genitive: 'extensionis', gender: 'f' },
+                        { word: 'adductio', genitive: 'adductionis', gender: 'f' },
+                        { word: 'abductio', genitive: 'abductionis', gender: 'f' },
+                        { word: 'pronatio', genitive: 'pronationis', gender: 'f' },
+                        { word: 'supinatio', genitive: 'supinationis', gender: 'f' },
+                        { word: 'capsula', genitive: 'capsulae', gender: 'f' },
+                        { word: 'flexor', genitive: 'flexoris', gender: 'm' },
+                        { word: 'extensor', genitive: 'extensoris', gender: 'm' },
+                        { word: 'abductor', genitive: 'abductoris', gender: 'm' },
+                        { word: 'adductor', genitive: 'adductoris', gender: 'm' },
+                        { word: 'pronator', genitive: 'pronatoris', gender: 'm' },
+                        { word: 'supinator', genitive: 'supinatoris', gender: 'm' },
+                        { word: 'lamina', genitive: 'laminae', gender: 'f' },
+                        { word: 'chiasma', genitive: 'chiasmatis', gender: 'f' },
+                        { word: 'retinaculum', genitive: 'retinaculi', gender: 'n' },
+                        { word: 'fascia', genitive: 'fasciae', gender: 'f' },
+                        { word: 'venter', genitive: 'ventris', gender: 'm' },
+                        { word: 'cauda', genitive: 'caudae', gender: 'f' },
+                        { word: 'cranium', genitive: 'cranii', gender: 'n' },
+                        { word: 'dilatatio', genitive: 'dilatationis', gender: 'f' },
+                        { word: 'constrictio', genitive: 'constrictionis', gender: 'f' },
+                        { word: 'dilatator', genitive: 'dilatatoris', gender: 'm' },
+                        { word: 'sphincter', genitive: 'sphincteris', gender: 'm' },
+                        { word: 'constrictor', genitive: 'constrictoris', gender: 'm' },
+                        { word: 'functio', genitive: 'functionis', gender: 'f' },
+                        { word: 'innervatio', genitive: 'innervationis', gender: 'f' },
+                        { word: 'latus', genitive: 'lateris', gender: 'n' },
+                        { word: 'dorsum', genitive: 'dorsi', gender: 'n' },
+                        { word: 'palma', genitive: 'palmae', gender: 'f' },
+                        { word: 'cubitus', genitive: 'cubiti', gender: 'm' },
+                        { word: 'foramen', genitive: 'foraminis', gender: 'n' },
+                        { word: 'plexus', genitive: 'plexus', gender: 'm' },
+                        { word: 'hiatus', genitive: 'hiatus', gender: 'm' },
+                        { word: 'pars', genitive: 'partis', gender: 'f' },
+                        { word: 'pollex', genitive: 'pollicis', gender: 'm' },
+                        { word: 'index', genitive: 'indicis', gender: 'm' },
+                        { word: 'medius', genitive: 'medii', gender: 'm' },
+                        { word: 'cor', genitive: 'cordis', gender: 'n' },
+                        { word: 'atrium', genitive: 'atrii', gender: 'n' },
+                        { word: 'ventriculus', genitive: 'ventriculi', gender: 'm' },
+                        { word: 'circulatio', genitive: 'circulationis', gender: 'f' },
+                        { word: 'sanguis', genitive: 'sanguinis', gender: 'm' },
+                        { word: 'aorta', genitive: 'aortae', gender: 'f' },
+                        { word: 'arcus', genitive: 'arcus', gender: 'm' },
+                        { word: 'ramus', genitive: 'rami', gender: 'm' },
+                        { word: 'cervix', genitive: 'cervicis', gender: 'f' },
+                        { word: 'cerebrum', genitive: 'cerebri', gender: 'n' },
+                        { word: 'axilla', genitive: 'axillae', gender: 'f' },
+                        { word: 'thorax', genitive: 'thoracis', gender: 'm' },
+                        { word: 'tempus', genitive: 'temporis', gender: 'n' },
+                        { word: 'pectus', genitive: 'pectoris', gender: 'n' },
+                        { word: 'rete', genitive: 'retis', gender: 'n' },
+                        { word: 'systema', genitive: 'systematis', gender: 'n' },
+                        { word: 'truncus', genitive: 'trunci', gender: 'm' },
+                        { word: 'cisterna', genitive: 'cisternae', gender: 'f' },
+                        { word: 'nodus', genitive: 'nodi', gender: 'm' },
+                        { word: 'fasciculus', genitive: 'fasciculi', gender: 'm' },
+                        { word: 'fissura', genitive: 'fissurae', gender: 'f' },
+                        { word: 'radix', genitive: 'radicis', gender: 'f' },
+                        { word: 'apex', genitive: 'apicis', gender: 'm' },
+                        { word: 'regio', genitive: 'regionis', gender: 'f' },
+                        { word: 'paries', genitive: 'parietis', gender: 'm' },
+                        { word: 'anastomosis', genitive: 'anastomosis', gender: 'f' },
+                        { word: 'cingulum', genitive: 'cinguli', gender: 'n' },
+                        { word: 'femur', genitive: 'femoris', gender: 'n' },
+                        { word: 'patella', genitive: 'patellae', gender: 'f' },
+                        { word: 'tibia', genitive: 'tibiae', gender: 'f' },
+                        { word: 'fibula', genitive: 'fibulae', gender: 'f' },
+                        { word: 'tarsus', genitive: 'tasri', gender: 'm' },
+                        { word: 'pes', genitive: 'pedis', gender: 'm' },
+                        { word: 'acetabulum', genitive: 'acetabuli', gender: 'n' },
+                        { word: 'ala', genitive: 'alae', gender: 'f' },
+                        { word: 'labium', genitive: 'labii', gender: 'n' },
+                        { word: 'pecten', genitive: 'pectinis', gender: 'm' },
+                        { word: 'trochanter', genitive: 'trochanteris', gender: 'm' },
+                        { word: 'planum', genitive: 'plani', gender: 'n' },
+                        { word: 'malleolus', genitive: 'malleoli', gender: 'm' },
+                        { word: 'talus', genitive: 'tali', gender: 'm' },
+                        { word: 'calx', genitive: 'calcis', gender: 'm' },
+                        { word: 'sustentaculum', genitive: 'sustentaculi', gender: 'n' },
+                        { word: 'junctura', genitive: 'juncturae', gender: 'f' },
+                        { word: 'apertura', genitive: 'aperturae', gender: 'f' },
+                        { word: 'pelvis', genitive: 'pelvis', gender: 'f' },
+                        { word: 'aditus', genitive: 'aditus', gender: 'm' },
+                        { word: 'amplitudo', genitive: 'amplitudinis', gender: 'f' },
+                        { word: 'angustia', genitive: 'angustiae', gender: 'f' },
+                        { word: 'exitus', genitive: 'exitus', gender: 'm' },
+                        { word: 'distantia', genitive: 'distantiae', gender: 'f' },
+                        { word: 'pulvinar', genitive: 'pulvinaris', gender: 'n' },
+                        { word: 'zona', genitive: 'zonae', gender: 'f' },
+                        { word: 'crux', genitive: 'crucis', gender: 'f' },
+                        { word: 'genu', genitive: 'genus', gender: 'n' },
+                        { word: 'sinus', genitive: 'sinus', gender: 'm' },
+                        { word: 'fornix', genitive: 'fornicis', gender: 'm' },
+                        { word: 'tensor', genitive: 'tensoris', gender: 'm' },
+                        { word: 'tractus', genitive: 'tractus', gender: 'm' },
+                        { word: 'hallux', genitive: 'hallucis', gender: 'm' },
+                        { word: 'crus', genitive: 'cruris', gender: 'n' },
+                        { word: 'sura', genitive: 'surae', gender: 'f' },
+                        { word: 'spatium', genitive: 'spatii', gender: 'n' },
+                        { word: 'bifurcatio', genitive: 'bifurcationis', gender: 'f' },
+                        { word: 'vesica', genitive: 'vesicae', gender: 'f' },
+                        { word: 'rectum', genitive: 'recti', gender: 'n' },
+                        { word: 'ductus', genitive: 'ductus', gender: 'm' },
+                        { word: 'uterus', genitive: 'uteri', gender: 'm' },
+                        { word: 'clunis', genitive: 'clunis', gender: 'm' },
+                        { word: 'columna', genitive: 'columnae', gender: 'f' },
+                        { word: 'uncus', genitive: 'unci', gender: 'm' },
+                        { word: 'cornu', genitive: 'cornus', gender: 'n' },
+                        { word: 'cartilago', genitive: 'cartilaginis', gender: 'f' },
+                        { word: 'manubrium', genitive: 'manubrii', gender: 'n' },
+                        { word: 'atlas', genitive: 'atlantis', gender: 'm' },
+                        { word: 'axis', genitive: 'axis', gender: 'm' },
+                        { word: 'dosis', genitive: 'dosis', gender: 'f' },
+                        { word: 'tussis', genitive: 'tussis', gender: 'm' },
+                        { word: 'dies', genitive: 'diei', gender: 'm' },
+                        { word: 'glomus', genitive: 'glomeris', gender: 'n' },
+                        { word: 'anulus', genitive: 'anuli', gender: 'm' },
+                        { word: 'nox', genitive: 'noctis', gender: 'f' },
+                        { word: 'saccus', genitive: 'sacci', gender: 'm' },
+                        { word: 'ossiculum', genitive: 'ossiculi', gender: 'n' },
+                        { word: 'corpusculum', genitive: 'corpusculi', gender: 'n' },
+                        { word: 'palpebra', genitive: 'palpebrae', gender: 'f' },
+                        { word: 'cilium', genitive: 'cilii', gender: 'n' },
+                        { word: 'abdomen', genitive: 'abdominis', gender: 'n' },
+                        { word: 'syndroma', genitive: 'syndromatis', gender: 'n' },
+                        { word: 'res', genitive: 'rei', gender: 'f' }]; // Variable to store loaded word data
+        var selectedDeclensions = [];
+        var selectedCases = [];
+        var cases = ['Nominative', 'Genitive', 'Dative', 'Accusative', 'Ablative'];
+        var numbers = ['Singular', 'Plural'];
+
+        function startQuiz() {
+            // Handle checkbox selections and other initialization logic
+
+            selectedDeclensions = getSelectedDeclensions();
+            selectedCases = getSelectedCases();
+
+            if (selectedDeclensions.length === 0 || selectedCases.length === 0) {
+                alert("Please select at least one declension and one case.");
+                return;
+            }
+
+            // Load the words data from the selected file
+            
+            getRandomWordAndCase()
+
+            // Display the quiz container
+            document.getElementById('quizContainer').style.display = 'block';
+        }
+
+        function getSelectedDeclensions() {
+            var checkboxes = document.getElementsByClassName('declensionCheckbox');
+            var selected = [];
+
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].checked) {
+                    selected.push(checkboxes[i].value);
+                }
+            }
+
+            return selected;
+        }
+
+        function clearInputField() {
+            // Assuming your input field has an id attribute, for example, "userGuess"
+            var inputField = document.getElementById('userGuess');
+
+            // Set the value of the input field to an empty string
+            if (inputField) {
+                inputField.value = '';
+            }
+        }
+
+        function getSelectedCases() {
+            var checkboxes = document.getElementsByClassName('caseCheckbox');
+            var selected = [];
+
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].checked) {
+                    selected.push(checkboxes[i].value);
+                }
+            }
+
+            return selected;
+        }
+
+        function getRandomWordAndCase() {
+            // Choose a random word from the loaded data based on selected declensions
+            clearInputField()
+            var filteredWords = wordsData.filter(word => {
+                return selectedDeclensions.some(declension => {
+                    return word.genitive.endsWith(getGenitiveEnding(declension));
+                });
+            });
+
+            if (filteredWords.length === 0) {
+                alert("No words available for the selected declensions.");
+                return;
+            }
+
+            const randomIndex = Math.floor(Math.random() * filteredWords.length);
+            const randomWord = filteredWords[randomIndex];
+            const randomCase = getRandomElement(selectedCases);
+            const randomNumber = getRandomElement(numbers);
+
+            // Store the current word, case, and number for checking later
+            currentWord = randomWord;
+            currentCase = randomCase;
+            currentNumber = randomNumber;
+
+            // Display the random word, case, and number
+            console.log('Random word, case, and number:', randomWord, randomCase, randomNumber);
+            document.getElementById('randomWord').innerText = 'Word: ' + randomWord.word;
+            document.getElementById('randomCaseNumber').innerText = 'Case/Number: ' + randomCase + ' ' + randomNumber;
+        }
+
+        function getGenitiveEnding(declension) {
+            // Return the expected genitive ending for the selected declension
+            switch (declension) {
+                case 'V':
+                    return 'ei';
+                case 'I':
+                    return 'ae';
+                case 'II':
+                    return 'i';
+                case 'III':
+                    return 'is';
+                case 'IV':
+                    return 'us';
+                default:
+                    return '';
+            }
+        }
+        function getRandomElement(array) {
+            // Return a random element from the given array
+            const randomIndex = Math.floor(Math.random() * array.length);
+            return array[randomIndex];
+        }
+
+        var currentWord, currentCase, currentNumber;
+
+        function submitGuess() {
+            // Handle the user's guess
+            var userGuess = document.getElementById('userGuess').value;
+
+            // Check if the user's guess is correct
+            var isCorrect = checkGuess() === userGuess.toLowerCase();
+
+            // Perform logic based on correctness
+            if (isCorrect) {
+                alert("Correct!");
+            } else {
+                alert("Incorrect. The correct answer is: " + checkGuess());
+            }
+
+            // Call a function to get the next random word, case, and number
+            getRandomWordAndCase();
+        }
+
+        function endsWithTwoConsonants(word) {
+            // Define a regular expression to match two consonants at the end of the word
+            var regex = /[bcdfghjklmnpqrstvwxyz]{2}$/i;
+
+            // Test the word against the regular expression
+            return regex.test(word);
+        }
+
+        function isIStem(word) {
+            // Define a regular expression to match the specified endings
+            var regex = /(al|ar|e)$/i;
+
+            // Test the word against the regular expression
+            return regex.test(word);
+        }
+
+        function declensionLength(word) {
+            // Define a regular expression to match the specified endings
+            var regex = /(ei|ae|is|us)$/i;
+
+            // Test the word against the regular expression
+            return regex.test(word);
+        }
+
+
+        function checkGuess() {
+            // Check if the user's guess is correct based on the provided logic
+
+            // Extract the trunk from the genitive
+            if (declensionLength(currentWord.genitive)){
+                var trunk = currentWord.genitive.slice(0, -2);
+            } else {var trunk = currentWord.genitive.slice(0, -1)}
+            // Determine the correct form based on the selected declension, case, and number
+            var correctForm;
+            if (currentWord.genitive.endsWith("ae")){
+            if (currentNumber === 'Singular') {
+                switch (currentCase) {
+                    case 'Nominative':
+                        correctForm = currentWord.word;
+                        break;
+                    case 'Genitive':
+                        correctForm = trunk + 'ae';
+                        break;
+                    case 'Dative':
+                        correctForm = trunk + 'ae';
+                        break;
+                    case 'Ablative':
+                        correctForm = currentWord.word;
+                        break;
+                    case 'Accusative':
+                        correctForm = trunk + 'am';
+                        break;
+                    default:
+                        correctForm = ''; // Invalid case
+                }
+            } else { // Plural
+                switch (currentCase) {
+                    case 'Nominative':
+                        correctForm = trunk + 'ae';
+                        break;
+                    case 'Genitive':
+                        correctForm = trunk + 'arum';
+                        break;
+                    case 'Dative':
+                        correctForm = trunk + 'is';
+                        break;
+                    case 'Accusative':
+                        correctForm = trunk + 'as';
+                        break;
+                    case 'Ablative':
+                        correctForm = trunk + 'is'; // Same as plural dative
+                        break;
+                    default:
+                        correctForm = ''; // Invalid case
+                }
+                
+            }} else if (currentWord.genitive.endsWith("ei")) {
+                if (currentNumber === 'Singular') {
+                switch (currentCase) {
+                    case 'Nominative':
+                        correctForm = currentWord.word;
+                        break;
+                    case 'Genitive':
+                        correctForm = trunk + 'ei';
+                        break;
+                    case 'Dative':
+                        correctForm = trunk + 'e';
+                        break;
+                    case 'Ablative':
+                        correctForm = trunk + "e";
+                        break;
+                    case 'Accusative':
+                        correctForm = trunk + "em";
+                        break;
+                    default:
+                        correctForm = ''; // Invalid case
+                }
+            } else { // Plural
+                switch (currentCase) {
+                    case 'Nominative':
+                        correctForm = trunk + "es";
+                        break;
+                    case 'Genitive':
+                        correctForm = trunk + 'erum';
+                        break;
+                    case 'Dative':
+                        correctForm = trunk + 'ibus';
+                        break;
+                    case 'Accusative':
+                        correctForm = trunk + "es";
+                        break;
+                    case 'Ablative':
+                        correctForm = trunk + 'ebus'; // Same as plural dative
+                        break;
+                    default:
+                        correctForm = ''; // Invalid case
+                }
+            
+
+            }} else if (currentWord.genitive.endsWith("i")) {
+                if (currentNumber === 'Singular') {
+                switch (currentCase) {
+                    case 'Nominative':
+                        correctForm = currentWord.word;
+                        break;
+                    case 'Genitive':
+                        correctForm = trunk + 'i';
+                        break;
+                    case 'Dative':
+                        correctForm = trunk + 'o';
+                        break;
+                    case 'Ablative':
+                        correctForm = trunk + "o";
+                        break;
+                    case 'Accusative':
+                        if (currentWord.gender === "n"){
+                        correctForm = currentWord.word;
+                        } else {correctForm = trunk + "um"}
+                        break;
+                    default:
+                        correctForm = ''; // Invalid case
+                }
+            } else { // Plural
+                switch (currentCase) {
+                    case 'Nominative':
+                    if (currentWord.gender === "n"){
+                        correctForm = trunk + "a";
+                        } else {correctForm = trunk + "i"}
+                        break;
+                    case 'Genitive':
+                        correctForm = trunk + 'orum';
+                        break;
+                    case 'Dative':
+                        correctForm = trunk + 'is';
+                        break;
+                    case 'Accusative':
+                    if (currentWord.gender === "n"){
+                        correctForm = trunk + "a";
+                        } else {correctForm = trunk + "os"}
+                        break;
+                    case 'Ablative':
+                        correctForm = trunk + 'is'; // Same as plural dative
+                        break;
+                    default:
+                        correctForm = ''; // Invalid case
+                }
+            }} else if (currentWord.genitive.endsWith("is")) {
+                if (currentNumber === 'Singular') {
+                switch (currentCase) {
+                    case 'Nominative':
+                        correctForm = currentWord.word;
+                        break;
+                    case 'Genitive':
+                        correctForm = trunk + 'is';
+                        break;
+                    case 'Dative':
+                        correctForm = trunk + 'i';
+                        break;
+                    case 'Ablative':
+                    if (isIStem(currentWord) || currentWord.word.endsWith("sis")){
+                            correctForm = trunk + 'i';
+                        } else {correctForm = trunk + "e"}
+                        break;
+                    case 'Accusative':
+                        if (currentWord.gender === "n"){
+                            correctForm = currentWord.word;
+                        } else if (currentWord.word.endsWith("sis")) {
+                            correctForm = trunk + 'im';
+                        } else {correctForm = trunk + "em"}
+                        break;
+                    default:
+                        correctForm = ''; // Invalid case
+                }
+            } else { // Plural
+                switch (currentCase) {
+                    case 'Nominative':
+                    if (currentWord.gender === "n"){
+                        if (isIStem(currentWord)){
+                            correctForm = trunk + "ia";
+                        } else {correctForm = trunk + "a"}
+                        } else {correctForm = trunk + "es"}
+                        break;
+                    case 'Genitive':
+                        if (isIStem(currentWord) || currentWord.word.endsWith("sis")){
+                            correctForm = trunk + 'ium';
+                        } else if (endsWithTwoConsonants(trunk)){
+                            correctForm = trunk + 'ium';
+                        } else {correctForm = trunk + 'um'}
+                        break;
+                    case 'Dative':
+                        correctForm = trunk + 'ibus';
+                        break;
+                    case 'Accusative':
+                    if (currentWord.gender === "n"){
+                        correctForm = trunk + "a";
+                        } else {correctForm = trunk + "es"}
+                        break;
+                    case 'Ablative':
+                        correctForm = trunk + 'ibus'; // Same as plural dative
+                        break;
+                    default:
+                        correctForm = ''; // Invalid case
+                }
+            }} else if (currentWord.genitive.endsWith("us")) {
+                if (currentNumber === 'Singular') {
+                switch (currentCase) {
+                    case 'Nominative':
+                        correctForm = currentWord.word;
+                        break;
+                    case 'Genitive':
+                        correctForm = trunk + 'us';
+                        break;
+                    case 'Dative':
+                        correctForm = trunk + 'ui';
+                        break;
+                    case 'Ablative':
+                        correctForm = trunk + "u";
+                        break;
+                    case 'Accusative':
+                        if (currentWord.gender === "n"){
+                            correctForm = currentWord.word;
+                        } else {correctForm = trunk + "um"}
+                        break;
+                    default:
+                        correctForm = ''; // Invalid case
+                }
+            } else { // Plural
+                switch (currentCase) {
+                    case 'Nominative':
+                        if (currentWord.gender === "n"){
+                            correctForm = trunk + "ua";
+                        } else {correctForm = trunk + "us"}
+                        break;
+                    case 'Genitive':
+                        correctForm = trunk + 'uum';
+                        break;
+                    case 'Dative':
+                        correctForm = trunk + 'ibus';
+                        break;
+                    case 'Accusative':
+                        if (currentWord.gender === "n"){
+                            correctForm = trunk + "ua";
+                        } else {correctForm = trunk + "us"}
+                        break;
+                    case 'Ablative':
+                        correctForm = trunk + 'ibus'; // Same as plural dative
+                        break;
+                    default:
+                        correctForm = ''; // Invalid case
+                }
+            
+
+            }}
+
+            // Compare the user's guess with the correct form
+            return correctForm.toLowerCase();
+        }
+    </script>
+</body>
+</html>
