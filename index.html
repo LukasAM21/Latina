@@ -609,7 +609,7 @@
             } else { // Plural
                 switch (currentCase) {
                     case 'Nominative':
-                    if (isIStem(currentWord)){
+                    if (isIStem(currentWord.word)){
                             correctForm = trunk + "ia";
                         } else if (currentWord.gender === "n") {correctForm = trunk + "a"
                         } else {correctForm = trunk + "es"}
