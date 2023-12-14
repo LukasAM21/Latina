@@ -625,8 +625,9 @@
                         correctForm = trunk + 'ibus';
                         break;
                     case 'Accusative':
-                    if (currentWord.gender === "n"){
-                        correctForm = trunk + "a";
+                    if (isIStem(currentWord.word)){
+                            correctForm = trunk + "ia";
+                        } else if (currentWord.gender === "n") {correctForm = trunk + "a"
                         } else {correctForm = trunk + "es"}
                         break;
                     case 'Ablative':
