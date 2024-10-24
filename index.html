@@ -73,9 +73,8 @@
     </div>
 
     
-    <p>Last update: 4.1.2024</p>
+    <p>Last update: 24.10.2024 16:35</p>
     <p>Last update of vocabulary: 20.10.2024</p>
-    <p>N.B.: Všetky žlté slová odstránené zo slovej zásoby; rody opravené; výnimky resp. celý kód upravím v dohľadnej dobe :)</p>
 
     <script>
         function handleKeyDown(event) {
@@ -651,14 +650,14 @@
                         correctForm = trunk + 'i';
                         break;
                     case 'Ablative':
-                    if (isIStem(currentWord) || currentWord.word.endsWith("sis")){
+                    if (isIStem(currentWord) || currentWord.word.endsWith("sis") || currentWord.word.endsWith("xis")){
                             correctForm = trunk + 'i';
                         } else {correctForm = trunk + "e"}
                         break;
                     case 'Accusative':
                         if (currentWord.gender === "n"){
                             correctForm = currentWord.word;
-                        } else if (currentWord.word.endsWith("sis")) {
+                        } else if (currentWord.word.endsWith("sis") || currentWord.word.endsWith("xis")) {
                             correctForm = trunk + 'im';
                         } else {correctForm = trunk + "em"}
                         break;
